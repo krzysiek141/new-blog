@@ -23,7 +23,7 @@ Bootstrap(app)
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 # second argument is used if a file is run locally
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///blog.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL2", "sqlite:///blog.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager()
