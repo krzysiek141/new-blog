@@ -94,7 +94,7 @@ class Comment(db.Model):
     comment_post = relationship("BlogPost", back_populates="posts")
     post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
 
-# db.create_all()
+db.create_all()
 
 gravatar = Gravatar(app,
                     size=200,
