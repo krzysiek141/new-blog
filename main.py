@@ -1,5 +1,3 @@
-# we flasku można normalnie stosować obsługę błędów mimo że nie są one wyrzucane na zewnątrz przez debugger
-
 from operator import pos
 from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
@@ -14,17 +12,31 @@ from flask_gravatar import Gravatar
 from functools import wraps
 import os
 
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+
+app.config['SECRET_KEY'] = "mysecret7777"
+
+
+# app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+# second argument is used if a file is run locally
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///blog.db")
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
-##CONNECT TO DB
+gravatar = Gravatar(app,
+                    size=200,
+                    rating='g',
+                    default='identicon',
+                    force_default=False,
+                    force_lower=False,
+                    use_ssl=False,
+                    base_url=None)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
-# second argument is used if a file is run locally
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL2", "sqlite:///blog.db")
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -95,15 +107,6 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
 
 # db.create_all()
-
-gravatar = Gravatar(app,
-                    size=200,
-                    rating='g',
-                    default='identicon',
-                    force_default=False,
-                    force_lower=False,
-                    use_ssl=False,
-                    base_url=None)
 
 @app.route('/')
 def get_all_posts():
