@@ -1,30 +1,28 @@
+import os
 from operator import pos
+from datetime import date
+from functools import wraps
+
 from flask import Flask, render_template, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
-from datetime import date
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import relation, relationship
-from flask_login import UserMixin, login_manager, login_user, LoginManager, login_required, current_user, logout_user
-from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
+from flask_login import login_manager, login_user, LoginManager, login_required, current_user, logout_user
 from flask_gravatar import Gravatar
-from functools import wraps
-import os
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from models import db, User, BlogPost, Comment
+from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "mysecret7777"
-
-
 # app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
-# second argument is used if a file is run locally
+# second argument is used if a file is run locally - no DATABASE_URL key in environment
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///blog.db")
-
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+db.init_app(app)
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
@@ -37,14 +35,10 @@ gravatar = Gravatar(app,
                     use_ssl=False,
                     base_url=None)
 
-db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 def admin_only(f):
-    # In a nutshell, it helps prevent decorators from masking identity of the
-    # decorated functions. Thus, the functions can keep their metadata even
-    # after they are decorated by decorators.
     @wraps(f)
     def wrapper_function(*args, **kwargs):
         if current_user.is_authenticated:
@@ -56,57 +50,11 @@ def admin_only(f):
             return abort(403)
     return wrapper_function
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-##CONFIGURE TABLES
-
-# When creating a relation between the two tables, there is a hidden author
-# column which is created automatically in the Post class. This was the backref
-# that was added while creating the model. Angela is tapping into that author
-# column to retrieve the name. This is how I've created the new post,
-class User(UserMixin, db.Model):
-    __tablename__ = "users"
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(250), unique=True)
-    password = db.Column(db.String(250))
-    name = db.Column(db.String(250))
-
-    #This will act like a List of BlogPost objects attached to each User. 
-    #The "author" refers to the author property in the BlogPost class.
-    posts = relationship("BlogPost", back_populates="author")
-    comments = relationship("Comment", back_populates="comment_author")
-
-class BlogPost(db.Model):
-    __tablename__ = "blog_posts"
-    id = db.Column(db.Integer, primary_key=True)
-
-    #Create Foreign Key, "users.id" the users refers to the tablename of User.
-    author = relationship("User", back_populates="posts")
-    # "users.id" the users refers to the tablename of User
-    author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-
-    title = db.Column(db.String(250), unique=True, nullable=False)
-    subtitle = db.Column(db.String(250), nullable=False)
-    date = db.Column(db.String(250), nullable=False)
-    body = db.Column(db.Text, nullable=False)
-    img_url = db.Column(db.String(250), nullable=False)
-
-    posts = relationship("Comment", back_populates="comment_post")
-
-class Comment(db.Model):
-    __tablename__ = "comments"
-    id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.Text, nullable=False)
-
-    comment_author = relationship("User", back_populates="comments")
-    comment_author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    
-    comment_post = relationship("BlogPost", back_populates="posts")
-    post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
-
-# db.create_all()
 
 @app.route('/')
 def get_all_posts():
@@ -199,7 +147,6 @@ def contact():
     return render_template("contact.html")
 
 
-
 @app.route("/new-post", methods=["GET", "POST"])
 @admin_only
 def add_new_post():
@@ -240,7 +187,6 @@ def edit_post(post_id):
         return redirect(url_for("show_post", post_id=post.id))
 
     return render_template("make-post.html", form=edit_form)
-
 
 
 @app.route("/delete/<int:post_id>")
