@@ -1,4 +1,6 @@
 import os
+import smtplib
+import dotenv
 from operator import pos
 from datetime import date
 from functools import wraps
@@ -11,8 +13,15 @@ from flask_gravatar import Gravatar
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from models import db, User, BlogPost, Comment
-from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
+from forms import ContactForm, CreatePostForm, RegisterForm, LoginForm, CommentForm
 
+dotenv.load_dotenv()
+
+MAIL_SERVER_PASSWORD = os.environ.get("MAIL_SERVER_PASSWORD")
+MAIL_ADDRESS = os.environ.get("MAIL_ADDRESS")
+RECIPIENT_MAIL = os.environ.get("RECIPIENT_MAIL")
+
+print(MAIL_ADDRESS, MAIL_SERVER_PASSWORD)
 
 app = Flask(__name__)
 
@@ -98,6 +107,7 @@ def login():
         if found_user:
             if check_password_hash(found_user.password, form.password.data):
                 login_user(found_user)
+                flash("You have successfully logged in")
                 return redirect(url_for('get_all_posts'))
             else:
                 flash("The password is incorrect. Try again")
@@ -142,10 +152,21 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
-
+    contact_form = ContactForm()
+    if contact_form.validate_on_submit():
+        subject = f"Subject:Mail from:{contact_form.name.data} regarding ......\n\n"
+        text = f"{contact_form.message.data}"
+        message = subject + text
+        with smtplib.SMTP('smtp.mail.yahoo.com') as connection:
+            connection.starttls()
+            connection.login(MAIL_ADDRESS, MAIL_SERVER_PASSWORD)
+            connection.sendmail(MAIL_ADDRESS, RECIPIENT_MAIL, msg=message.encode("utf-8"))
+        return redirect(url_for("contact"))
+    else:
+        return render_template("contact.html", contact_form=contact_form)
+        
 
 @app.route("/new-post", methods=["GET", "POST"])
 @admin_only
