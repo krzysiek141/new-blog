@@ -21,8 +21,6 @@ MAIL_SERVER_PASSWORD = os.environ.get("MAIL_SERVER_PASSWORD")
 MAIL_ADDRESS = os.environ.get("MAIL_ADDRESS")
 RECIPIENT_MAIL = os.environ.get("RECIPIENT_MAIL")
 
-print(MAIL_ADDRESS, MAIL_SERVER_PASSWORD)
-
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = "mysecret7777"
@@ -154,6 +152,10 @@ def about():
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
+        # message = f"From: \"{GMAIL_SENDER}\" <{GMAIL_EMAIL}>\n" \
+        #       f"To: {GMAIL_RECIPIENT}\n" \
+        #       f"Subject: {subject}\n\n" \
+        #       f"{msg_body}".encode("utf-8")
     contact_form = ContactForm()
     if contact_form.validate_on_submit():
         subject = f"Subject:Mail from:{contact_form.name.data} regarding ......\n\n"
