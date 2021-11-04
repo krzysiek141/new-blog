@@ -52,7 +52,7 @@ def admin_only(f):
             if current_user.id != 1:
                 return abort(403)
             else:
-                return f(*args, *kwargs)
+                return f(*args, **kwargs)
         else:
             return abort(403)
     return wrapper_function
@@ -199,6 +199,7 @@ def add_new_post():
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
 @admin_only
 def edit_post(post_id):
+    print("to mój print", post_id)
     post = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(
         title=post.title,
