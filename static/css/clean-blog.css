@@ -483,3 +483,7 @@ footer .copyright {
   font-size: 16px;
   padding: 25px 35px;
 }
+
+#my-alert{
+  margin-bottom: 0px;
+}

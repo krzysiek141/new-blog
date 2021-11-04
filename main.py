@@ -75,7 +75,7 @@ def register():
     if register_form.validate_on_submit():
         # user already in database
         if User.query.filter_by(email=register_form.email.data).first():
-            flash("You have already signed up with this email. Log in instead.")
+            flash("You have already signed up with this email. Log in instead.", category="warning")
             return redirect(url_for('login'))
         else:
             # no such user in database
@@ -92,6 +92,7 @@ def register():
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user)
+            flash("Your account has been successfully created", category="success")
             return redirect(url_for("get_all_posts"))
     else:
         return render_template("register.html", form=register_form)
@@ -105,13 +106,16 @@ def login():
         if found_user:
             if check_password_hash(found_user.password, form.password.data):
                 login_user(found_user)
-                flash("You have successfully logged in")
+                rights_text = ""
+                if current_user.id == 1:
+                    rights_text = " with admin rights"
+                flash(f"You have successfully logged in{rights_text}.", category="success")
                 return redirect(url_for('get_all_posts'))
             else:
-                flash("The password is incorrect. Try again")
+                flash("The password is incorrect. Try again", category="warning")
                 return redirect(url_for('login'))
         else:
-            flash("Specified email doesn't exist in the database. Try again.")
+            flash("Specified email doesn't exist in the database. Try again.", category="warning")
             return redirect(url_for('login'))
     else:
         return render_template("login.html", form=form)
@@ -121,6 +125,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash("You have been logged out", category="success")
     return redirect(url_for('get_all_posts'))
 
 
@@ -139,7 +144,7 @@ def show_post(post_id):
             db.session.commit()
             return redirect(url_for("show_post", post_id=post_id))
         else:
-            flash("You have to be logged in to leave a comment")
+            flash("You have to be logged in to leave a comment", category="warning")
             return redirect(url_for("login"))
     else:
         return render_template("post.html", post=requested_post, form=form)
@@ -165,6 +170,7 @@ def contact():
             connection.starttls()
             connection.login(MAIL_ADDRESS, MAIL_SERVER_PASSWORD)
             connection.sendmail(MAIL_ADDRESS, RECIPIENT_MAIL, msg=message.encode("utf-8"))
+        flash("The mail has been sent", category="success")
         return redirect(url_for("contact"))
     else:
         return render_template("contact.html", contact_form=contact_form)
@@ -185,6 +191,7 @@ def add_new_post():
         )
         db.session.add(new_post)
         db.session.commit()
+        flash("New post has been added", category="success")
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
 
@@ -207,6 +214,7 @@ def edit_post(post_id):
         post.author = current_user
         post.body = edit_form.body.data
         db.session.commit()
+        flash("Post successfully edited", category="success")
         return redirect(url_for("show_post", post_id=post.id))
 
     return render_template("make-post.html", form=edit_form)
@@ -218,6 +226,7 @@ def delete_post(post_id):
     post_to_delete = BlogPost.query.get(post_id)
     db.session.delete(post_to_delete)
     db.session.commit()
+    flash("Post successfully deleted", category="success")
     return redirect(url_for('get_all_posts'))
 
 
