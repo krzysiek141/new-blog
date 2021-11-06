@@ -32,6 +32,6 @@ class CommentForm(FlaskForm):
 class ContactForm(FlaskForm):
     name = StringField("Your Name", validators=[DataRequired()])
     email = StringField("Your Contact Email", validators=[DataRequired(), Email()])
-    topic = SelectField("Message Topic",choices=["Bugg report", "Request", "General"])
+    subject = SelectField("Message Subject",choices=["Bug report", "Request", "General"])
     message = TextAreaField("Your Message", render_kw={"rows": 25}, validators=[DataRequired()])
     submit = SubmitField("Send")

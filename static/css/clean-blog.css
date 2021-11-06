@@ -90,9 +90,7 @@ img::-moz-selection {
   color: #fff;
   background: transparent;
 }
-.comment {
-    padding-top: 20px;
-}
+
 .detailBox {
     width:320px;
     border:1px solid #bbb;
@@ -108,48 +106,14 @@ img::-moz-selection {
   display:inline-block;
 }
 
-.commentBox {
-    padding:10px;
-    border-top:1px dotted #bbb;
-}
-.commentBox .form-group:first-child, .actionBox .form-group:first-child {
-    width:80%;
-}
-.commentBox .form-group:nth-child(2), .actionBox .form-group:nth-child(2) {
-    width:18%;
-}
+
 .actionBox .form-group * {
     width:100%;
 }
 .taskDescription {
     margin-top:10px 0;
 }
-.commentList {
-    padding:0;
-    list-style:none;
-    max-height:200px;
-    overflow:auto;
-}
-.commentList li {
-    margin:0;
-    margin-top:10px;
-}
-.commentList li > div {
-    display:table-cell;
-}
-.commenterImage {
-    width:30px;
-    margin-right:5px;
-    height:100%;
-    float:left;
-}
-.commenterImage img {
-    width:100%;
-    border-radius:50%;
-}
-.commentText p {
-    margin:0;
-}
+
 .sub-text {
     color:#aaa;
     font-family:verdana;
@@ -486,4 +450,44 @@ footer .copyright {
 
 #my-alert{
   margin-bottom: 0px;
+}
+
+.username{
+  float: left;
+}
+.date-text{
+  float: right;
+}
+
+/*comments*/
+
+.comment{
+  margin-top: 35px;
+}
+.commentText{
+  display: inline-block;
+  width: 85%;
+}
+.commentList {
+  list-style:none;
+  overflow: visible;
+}
+.commentList li {
+  margin-top:10px;
+}
+.commenterImage {
+  margin-right:10px;
+  margin-bottom: 15px;
+  float:left;
+}
+.commenterImage img {
+  width: 50px;
+  height: 50px;
+  border-radius:50%;
+}
+.commentText p {
+  margin:0;
+  padding-bottom: 7px;
+  width: 100%;
+  overflow-wrap: break-word;
 }

@@ -157,16 +157,13 @@ def about():
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
-        # message = f"From: \"{GMAIL_SENDER}\" <{GMAIL_EMAIL}>\n" \
-        #       f"To: {GMAIL_RECIPIENT}\n" \
-        #       f"Subject: {subject}\n\n" \
-        #       f"{msg_body}".encode("utf-8")
     contact_form = ContactForm()
     if contact_form.validate_on_submit():
-        subject = f"Subject:Mail from:{contact_form.name.data} regarding ......\n\n"
-        text = f"{contact_form.message.data}"
-        message = subject + text
-        with smtplib.SMTP('smtp.mail.yahoo.com') as connection:
+        message = f"From: \"{contact_form.name.data} through contact form\" <{MAIL_ADDRESS}>\n" \
+              f"To: {RECIPIENT_MAIL}\n" \
+              f"Subject: Mail from {contact_form.name.data}, subject: {contact_form.subject.data}\n\n" \
+              f"{contact_form.message.data}\n\nContact me at: {contact_form.email.data}"
+        with smtplib.SMTP('smtp.mail.yahoo.com', port=587) as connection:
             connection.starttls()
             connection.login(MAIL_ADDRESS, MAIL_SERVER_PASSWORD)
             connection.sendmail(MAIL_ADDRESS, RECIPIENT_MAIL, msg=message.encode("utf-8"))
