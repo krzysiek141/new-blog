@@ -2,7 +2,7 @@ import os
 import smtplib
 import dotenv
 from operator import pos
-from datetime import date
+from datetime import date, datetime
 from functools import wraps
 
 from flask import Flask, render_template, redirect, url_for, flash, abort
@@ -30,6 +30,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:/
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
@@ -65,6 +66,7 @@ def load_user(user_id):
 
 @app.route('/')
 def get_all_posts():
+    # db.create_all()
     posts = BlogPost.query.all()
     return render_template("index.html", all_posts=posts)
 
@@ -137,6 +139,7 @@ def show_post(post_id):
         if current_user.is_authenticated:
             new_comment = Comment(
                 text=form.comment.data,
+                date = datetime.today().strftime("%H:%M  %b %d, %Y"),
                 comment_author_id = current_user.id,
                 post_id=post_id
             )

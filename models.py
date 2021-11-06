@@ -37,11 +37,10 @@ class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
+    date = db.Column(db.String(250), nullable=False)
 
     comment_author = relationship("User", back_populates="comments")
     comment_author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     
     comment_post = relationship("BlogPost", back_populates="posts")
     post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
-
-# db.create_all()
