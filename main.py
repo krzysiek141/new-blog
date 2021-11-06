@@ -1,6 +1,12 @@
 import os
 import smtplib
 import dotenv
+import requests
+import pandas as pd
+import json
+import plotly
+import plotly.express as px
+
 from operator import pos
 from datetime import date, datetime
 from functools import wraps
@@ -20,6 +26,8 @@ dotenv.load_dotenv()
 MAIL_SERVER_PASSWORD = os.environ.get("MAIL_SERVER_PASSWORD")
 MAIL_ADDRESS = os.environ.get("MAIL_ADDRESS")
 RECIPIENT_MAIL = os.environ.get("RECIPIENT_MAIL")
+OWM_API_KEY = os.environ.get("OWM_API_KEY")
+OWM_ENDPOINT = "https://api.openweathermap.org/data/2.5/onecall"
 
 app = Flask(__name__)
 
@@ -229,6 +237,39 @@ def delete_post(post_id):
     db.session.commit()
     flash("Post successfully deleted", category="success")
     return redirect(url_for('get_all_posts'))
+
+@app.route("/weather")
+def weather():
+    cracow_latitude = 50.06162
+    cracow_longitude = 19.93741
+
+    parameters = {
+    "lat": cracow_latitude,
+    "lon": cracow_longitude,
+    "appid": OWM_API_KEY,
+    "exclude": "minutely,daily,alerts",
+    "units": "metric"
+    }
+    response = requests.get(OWM_ENDPOINT, params=parameters)
+    response.raise_for_status()
+    data = response.json()
+    current_weather = data["current"]
+    forecast = data["hourly"]
+
+    temperature = [dataset["temp"] for dataset in forecast]
+    humidity = [dataset["humidity"] for dataset in forecast]
+    pressure = [dataset["pressure"] for dataset in forecast]
+    time = [datetime.fromtimestamp(int(dataset["dt"])) for dataset in forecast]
+
+    df = pd.DataFrame({
+      'Temperature': temperature,
+      'Humidity': humidity,
+      'Pressure': pressure,
+      'Time': time
+    })
+    fig = px.line(df, x='Time', y=["Temperature", "Humidity", "Pressure"])
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    return render_template("weather.html", current_weather=current_weather, forecast=forecast, graphJSON=graphJSON)
 
 
 if __name__ == "__main__":

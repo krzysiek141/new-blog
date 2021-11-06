@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block welcome_img %}
+<!-- Page Header -->
+<header class="masthead"
+  style="background-image: url('https://cdn.pixabay.com/photo/2016/03/26/23/00/umbrellas-1281751_960_720.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="site-heading">
+          <h1>Weather</h1>
+          <span class="subheading">Current weather for Kraków and a short forecast.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block main_content %}
+<div class="container">
+    <div><h2>Current weather in Cracow</h2></div>
+    <div class="row">
+      <div class="col-lg-3 mx-auto weather_img">
+        <img class="mx-auto" src="../static/img/weather_icons/{{ current_weather['weather'][0]['icon'] }}.png">
+      </div>
+      <div class="col-lg-4 mx-auto">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Air temperature: {{ current_weather['temp'] }} ℃</li>
+            <li class="list-group-item">Perceived temperature: {{ current_weather['feels_like'] }} ℃</li>
+            <li class="list-group-item">Atmospheric pressure: {{ current_weather['pressure'] }} hPa</li>
+            <li class="list-group-item">Relative humidity: {{ current_weather['humidity'] }} %</li>
+          </ul>
+      </div>
+      <div class="col-lg-4 mx-auto">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Wind speed: {{ current_weather['wind_speed'] }} m/s</li>
+            <li class="list-group-item">Cloudiness: {{ current_weather['clouds'] }}</li>
+            <li class="list-group-item">Visibility: {{ current_weather['visibility'] }}</li>
+            <li class="list-group-item">UV index: {{ current_weather['uvi'] }}</li>
+          </ul>
+      </div>
+    </div>
+    <div><h2>48-hours forecast</h2></div>
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div id='chart' class='chart'”></div>
+        </div>
+
+      </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+
+{{ super() }}
+<script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+<script type='text/javascript'>
+  var graphs = {{ graphJSON | safe }};
+  Plotly.plot('chart',graphs,{});
+</script>
+
+{% endblock %}

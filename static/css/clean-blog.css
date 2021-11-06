@@ -491,3 +491,10 @@ footer .copyright {
   width: 100%;
   overflow-wrap: break-word;
 }
+
+/*weather*/
+
+.weather_img img{
+  width: 200px;
+  height: 200px; 
+}
