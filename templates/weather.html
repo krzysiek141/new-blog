@@ -20,36 +20,39 @@
 
 {% block main_content %}
 <div class="container">
-    <div><h2>Current weather in Cracow</h2></div>
+    <div><h2 class="weather_header">Current weather in Cracow</h2></div>
     <div class="row">
       <div class="col-lg-3 mx-auto weather_img">
-        <img class="mx-auto" src="../static/img/weather_icons/{{ current_weather['weather'][0]['icon'] }}.png">
+        <img src="../static/img/weather_icons/{{ current_weather['weather'][0]['icon'] }}.png">
       </div>
       <div class="col-lg-4 mx-auto">
         <ul class="list-group list-group-flush">
-            <li class="list-group-item">Air temperature: {{ current_weather['temp'] }} ℃</li>
-            <li class="list-group-item">Perceived temperature: {{ current_weather['feels_like'] }} ℃</li>
-            <li class="list-group-item">Atmospheric pressure: {{ current_weather['pressure'] }} hPa</li>
-            <li class="list-group-item">Relative humidity: {{ current_weather['humidity'] }} %</li>
+            <li class="list-group-item bg-light">Air temperature: <span class="cond_value">{{ current_weather['temp'] }} ℃</span></li>
+            <li class="list-group-item bg-light">Perceived temperature: <span class="cond_value">{{ current_weather['feels_like'] }} ℃</span></li>
+            <li class="list-group-item bg-light">Atmospheric pressure: <span class="cond_value">{{ current_weather['pressure'] }} hPa</span></li>
+            <li class="list-group-item bg-light">Relative humidity: <span class="cond_value">{{ current_weather['humidity'] }} %</span></li>
           </ul>
       </div>
       <div class="col-lg-4 mx-auto">
         <ul class="list-group list-group-flush">
-            <li class="list-group-item">Wind speed: {{ current_weather['wind_speed'] }} m/s</li>
-            <li class="list-group-item">Cloudiness: {{ current_weather['clouds'] }}</li>
-            <li class="list-group-item">Visibility: {{ current_weather['visibility'] }}</li>
-            <li class="list-group-item">UV index: {{ current_weather['uvi'] }}</li>
+            <li class="list-group-item bg-light">Wind speed: <span class="cond_value">{{ current_weather['wind_speed'] }} m/s</span></li>
+            <li class="list-group-item bg-light">Cloudiness: <span class="cond_value">{{ current_weather['clouds'] }} %</span></li>
+            <li class="list-group-item bg-light">Visibility: <span class="cond_value">{{ current_weather['visibility'] }} meters</span></li>
+            <li class="list-group-item bg-light">UV index: <span class="cond_value">{{ current_weather['uvi'] }}</span></li>
           </ul>
       </div>
     </div>
-    <div><h2>48-hours forecast</h2></div>
-    <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
+    <div><h2 class="weather_header">48-hours forecast</h2></div>
+    <div class="row weather-row">
+        <div class="col col-lg-8 mx-auto">
             <div id='chart' class='chart'”></div>
         </div>
+    </div>
 
-      </div>
-  </div>
+
+
+
+
 {% endblock %}
 
 {% block scripts %}

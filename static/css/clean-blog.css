@@ -469,7 +469,7 @@ footer .copyright {
   width: 85%;
 }
 .commentList {
-  list-style:none;
+  list-style: none;
   overflow: visible;
 }
 .commentList li {
@@ -495,6 +495,21 @@ footer .copyright {
 /*weather*/
 
 .weather_img img{
+  display: block;
+  margin: auto;
   width: 200px;
-  height: 200px; 
+  height: 200px;
+}
+.weather_header{
+  padding: 15px 0;
+}
+.weather-row{
+  padding-top: 20px;
+}
+.cond_value{
+  float: right;
+}
+
+#chart{
+  overflow: visible;
 }
