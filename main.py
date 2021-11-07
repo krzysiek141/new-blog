@@ -1,8 +1,9 @@
 import os
 import smtplib
+# activate when running locally
 # import dotenv
 
-from operator import pos
+## from operator import pos
 from datetime import date, datetime
 from functools import wraps
 
@@ -18,6 +19,7 @@ from forms import ContactForm, CreatePostForm, RegisterForm, LoginForm, CommentF
 import graphs
 import owm_api
 
+# activate when running locally
 # dotenv.load_dotenv()
 
 MAIL_SERVER_PASSWORD = os.environ.get("MAIL_SERVER_PASSWORD")
@@ -26,8 +28,7 @@ RECIPIENT_MAIL = os.environ.get("RECIPIENT_MAIL")
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = "mysecret7777"
-# app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 # second argument is used if a file is run locally - no DATABASE_URL key in environment
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///blog.db")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -81,7 +82,8 @@ def register():
     if register_form.validate_on_submit():
         # user already in database
         if User.query.filter_by(email=register_form.email.data).first():
-            flash("You have already signed up with this email. Log in instead.", category="warning")
+            flash("You have already signed up with this email. Log in instead.",
+                category="warning")
             return redirect(url_for('login'))
         else:
             # no such user in database
@@ -203,7 +205,6 @@ def add_new_post():
 @app.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
 @admin_only
 def edit_post(post_id):
-    print("to mój print", post_id)
     post = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(
         title=post.title,

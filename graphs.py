@@ -1,6 +1,5 @@
 from datetime import datetime
 import plotly
-# import plotly.express as px
 import plotly.graph_objects as go
 import json
 
@@ -46,7 +45,6 @@ def graph_forecast(forecast_data):
             title="Humidity [%]",
             titlefont=dict(color="#ff7f0e"),
             tickfont=dict(color="#ff7f0e"),
-            #required to use position
             anchor="x",
             overlaying="y",
             side="right"
@@ -59,9 +57,7 @@ def graph_forecast(forecast_data):
             position=0.90,
             overlaying="y",
             side="right"
-            ),
-
-
+            )
         )
 
     # Update layout properties
