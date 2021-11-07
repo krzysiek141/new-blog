@@ -69,7 +69,7 @@ def load_user(user_id):
 
 @app.route('/')
 def get_all_posts():
-    # db.create_all()
+    db.create_all()
     posts = BlogPost.query.all()
     return render_template("index.html", all_posts=posts)
 
