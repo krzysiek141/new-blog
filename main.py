@@ -1,6 +1,6 @@
 import os
 import smtplib
-import dotenv
+#import dotenv
 
 from operator import pos
 from datetime import date, datetime
@@ -18,7 +18,7 @@ from forms import ContactForm, CreatePostForm, RegisterForm, LoginForm, CommentF
 import graphs
 import owm_api
 
-dotenv.load_dotenv()
+#dotenv.load_dotenv()
 
 MAIL_SERVER_PASSWORD = os.environ.get("MAIL_SERVER_PASSWORD")
 MAIL_ADDRESS = os.environ.get("MAIL_ADDRESS")
